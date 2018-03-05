@@ -86,8 +86,6 @@ workflows:
     jobs:
       - prepare_common:
           filters: &per_tag
-            branches:
-              exclude: /.*/
             tags:
               only: /.*/
       - prepare_commit:
