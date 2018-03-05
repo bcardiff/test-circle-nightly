@@ -9,7 +9,7 @@ jobs:
       - run: |
           mkdir -p ~/workspace/context
           cd ~/workspace/context
-          echo "export COMMON=ready" >> build.env
+          echo "export PROJ_COMMON=ready" >> build.env
           cat build.env
       - persist_to_workspace:
           root: ~/workspace
@@ -23,7 +23,7 @@ jobs:
           at: ~/workspace
       - run: |
           cd ~/workspace/context
-          echo "export MODE=latest" >> build.env
+          echo "export PROJ_MODE=latest" >> build.env
           cat build.env
       - persist_to_workspace:
           root: ~/workspace
@@ -37,7 +37,7 @@ jobs:
           at: ~/workspace
       - run: |
           cd ~/workspace/context
-          echo "export MODE=tagged" >> build.env
+          echo "export PROJ_MODE=tagged" >> build.env
           cat build.env
       - persist_to_workspace:
           root: ~/workspace
@@ -51,7 +51,7 @@ jobs:
           at: ~/workspace
       - run: |
           cd ~/workspace/context
-          echo "export MODE=cron" >> build.env
+          echo "export PROJ_MODE=cron" >> build.env
           cat build.env
       - persist_to_workspace:
           root: ~/workspace
@@ -66,9 +66,7 @@ jobs:
       - run: |
           cd ~/workspace/context
           source build.env
-      - run: |
-          env
-      - run: |
+          env | grep PROJ_
           echo "done"
 
 workflows:
