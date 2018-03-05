@@ -1,0 +1,110 @@
+version: 2
+
+jobs:
+  prepare_common:
+    docker:
+      - image: debian:stretch
+    steps:
+      - run: |
+          env
+      - run: |
+          echo "export COMMON=ready" >> build.env
+          cat build.env
+      - persist_to_workspace:
+          root: ../
+          paths:
+            - context
+
+  prepare_commit:
+    docker:
+      - image: debian:stretch
+    steps:
+      - run: |
+          env
+      - run: |
+          echo "export MODE=latest" >> build.env
+          cat build.env
+      - persist_to_workspace:
+          root: ../
+          paths:
+            - context
+
+  prepare_tagged:
+    docker:
+      - image: debian:stretch
+    steps:
+      - run: |
+          env
+      - run: |
+          echo "export PREV_STEP=b" >> build.env
+          cat build.env
+      - persist_to_workspace:
+          root: ../
+          paths:
+            - context
+
+  prepare_cron:
+    docker:
+      - image: debian:stretch
+    steps:
+      - run: |
+          env
+      - run: |
+          echo "export PREV_STEP=b" >> build.env
+          cat build.env
+      - persist_to_workspace:
+          root: ../
+          paths:
+            - context
+
+  build:
+    docker:
+      - image: debian:stretch
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: |
+          cd /tmp/workspace/context
+          source build.env
+      - run: |
+          env
+      - run: |
+          echo "done"
+
+workflows:
+  version: 2
+  commit:
+    jobs: &commit_jobs
+      - prepare_common
+      - prepare_commit:
+          requires:
+            - prepare_common
+      - build:
+          requires:
+            - prepare_commit
+  tag:
+    jobs:
+      - prepare_common:
+          filters: &per_tag
+            branches:
+              exclude: /.*/
+            tags:
+              only: /.*/
+      - prepare_commit:
+          filters: *per_tag
+          requires:
+            - prepare_common
+      - build:
+          filters: *per_tag
+          requires:
+            - prepare_commit
+
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 * * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs: *commit_jobs
