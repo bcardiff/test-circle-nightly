@@ -7,21 +7,22 @@ jobs:
       - run: |
           env
       - run: |
-          mkdir ~/context
+          mkdir -p ~/workspace/context
+          cd ~/workspace/context
           echo "export COMMON=ready" >> build.env
           cat build.env
       - persist_to_workspace:
-          root: ~/
+          root: ~/workspace
           paths:
             - context
 
   prepare_commit:
     machine: true
     steps:
+      - attach_workspace:
+          at: ~/workspace
       - run: |
-          env
-      - run: |
-          mkdir ~/context
+          cd ~/workspace/context
           echo "export MODE=latest" >> build.env
           cat build.env
       - persist_to_workspace:
@@ -32,10 +33,10 @@ jobs:
   prepare_tagged:
     machine: true
     steps:
+      - attach_workspace:
+          at: ~/workspace
       - run: |
-          env
-      - run: |
-          mkdir ~/context
+          cd ~/workspace/context
           echo "export MODE=tagged" >> build.env
           cat build.env
       - persist_to_workspace:
@@ -46,10 +47,10 @@ jobs:
   prepare_cron:
     machine: true
     steps:
+      - attach_workspace:
+          at: ~/workspace
       - run: |
-          env
-      - run: |
-          mkdir ~/context
+          cd ~/workspace/context
           echo "export MODE=cron" >> build.env
           cat build.env
       - persist_to_workspace:
@@ -61,9 +62,9 @@ jobs:
     machine: true
     steps:
       - attach_workspace:
-          at: /tmp/workspace
+          at: ~/workspace
       - run: |
-          cd /tmp/workspace/context
+          cd ~/workspace/context
           source build.env
       - run: |
           env
@@ -101,7 +102,7 @@ workflows:
   nightly:
     triggers:
       - schedule:
-          cron: "10 * * * *"
+          cron: "15 * * * *"
           filters:
             branches:
               only:
