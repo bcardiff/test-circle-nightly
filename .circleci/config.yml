@@ -2,8 +2,7 @@ version: 2
 
 jobs:
   prepare_common:
-    docker:
-      - image: debian:stretch
+    machine: true
     steps:
       - run: |
           env
@@ -17,8 +16,7 @@ jobs:
             - context
 
   prepare_commit:
-    docker:
-      - image: debian:stretch
+    machine: true
     steps:
       - run: |
           env
@@ -32,8 +30,7 @@ jobs:
             - context
 
   prepare_tagged:
-    docker:
-      - image: debian:stretch
+    machine: true
     steps:
       - run: |
           env
@@ -47,8 +44,7 @@ jobs:
             - context
 
   prepare_cron:
-    docker:
-      - image: debian:stretch
+    machine: true
     steps:
       - run: |
           env
@@ -62,8 +58,7 @@ jobs:
             - context
 
   build:
-    docker:
-      - image: debian:stretch
+    machine: true
     steps:
       - attach_workspace:
           at: /tmp/workspace
